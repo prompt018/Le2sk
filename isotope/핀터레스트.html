@@ -1,0 +1,477 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>핀터레스트 갤러리 연습</title>
+  <script src="https://kit.fontawesome.com/e0e670702c.js" crossorigin="anonymous"></script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Alegreya+Sans+SC:ital,wght@0,100;0,300;0,400;0,500;0,700;0,800;0,900;1,100;1,300;1,400;1,500;1,700;1,800;1,900&family=Black+Han+Sans&family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Noto+Sans+KR:wght@100..900&family=Orbitron:wght@400..900&family=Poiret+One&display=swap');
+
+    * {
+      margin: 0;
+      padding: 0;
+    }
+
+    ul,
+    ol,
+    li {
+      list-style: none;
+    }
+
+    a {
+      text-decoration: none;
+    }
+
+    body {
+      background: #efefef;
+    }
+
+    header {
+      width: 400px;
+      height: 100%;
+      background: linear-gradient(45deg, aqua, royalblue);
+      position: fixed;
+      top: 0px;
+      left: 0px;
+    }
+
+    header h1 {
+      font: bold 50px/1 'orbitron';
+      color: #fff;
+      letter-spacing: 1px;
+      position: absolute;
+      left: 50px;
+      top: 50%;
+      transform: translateY(-150%);
+    }
+
+    header h1::before {
+      content: 'UI/UX DEVELOPMENT';
+      display: block;
+      font: 14px/1 'orbitron';
+      color: #fff;
+      letter-spacing: 2px;
+      position: absolute;
+      left: 0px;
+      top: 140px;
+      opacity: 0.8;
+    }
+
+    header h1::after {
+      content: '';
+      display: block;
+      width: 150px;
+      height: 2px;
+      background: #fff;
+      margin-top: 20px;
+    }
+
+    header ul {
+      position: absolute;
+      left: 40px;
+      bottom: 100px;
+    }
+
+    header ul li {
+      float: left;
+      margin-right: 10px;
+    }
+
+    header ul li a {
+      font-size: 20px;
+      color: #fff;
+    }
+
+    main {
+      margin-left: 400px;
+      box-sizing: border-box;
+      padding: 20px;
+    }
+
+    main ul {
+      width: 100%;
+      margin-bottom: 10px;
+      margin-right: 20px;
+    }
+
+    main ul::after {
+      content: '';
+      display: block;
+      clear: both;
+    }
+
+    main ul li {
+      float: right;
+      width: 100px;
+      height: 26px;
+      margin-right: 20px;
+    }
+
+    main ul li a {
+      display: block;
+      width: 100%;
+      height: 100%;
+      font: bold 10px/26px 'orbitron';
+      color: #aaa;
+      letter-spacing: 1px;
+      text-align: center;
+      border-radius: 5px;
+      box-shadow: 0px 0px 3px rgba(0, 0, 0, 0.5);
+      background: #fff;
+    }
+
+    main ul li.on a {
+      background: linear-gradient(45deg, #67faf3, #58abf8);
+      box-shadow: 0px 5px 20px rgba(0, 255, 255, 0.527);
+    }
+
+    main section {
+      width: 100%;
+    }
+
+    main section::after {
+      content: '';
+      display: block;
+      clear: both;
+    }
+
+    main section article {
+      width: 20%;
+      float: left;
+      box-sizing: border-box;
+      padding: 12px;
+    }
+
+    main section article div {
+      width: 100%;
+      height: 100%;
+      background: #fff;
+      border-radius: 4px;
+      box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.1);
+      box-sizing: border-box;
+      padding: 14px;
+    }
+
+    main section article div img {
+      width: 100%;
+    }
+
+    main section article div h2 {
+      margin-top: 15px;
+      font: bold 11px/1 'orbitron';
+      letter-spacing: 1px;
+      color: #444;
+      margin-bottom: 5px;
+    }
+
+    main section article div p {
+      font: 10px/1 'orbitron';
+      color: #777;
+      margin-bottom: 15px;
+    }
+
+    @media screen and(max-width:1599px) {
+      header {
+        width: 350px;
+      }
+
+      main {
+        margin-left: 350px;
+      }
+
+      main section article {
+        width: 25%;
+      }
+    }
+  </style>
+  <script src="./isotope.pkgd.min.js"></script>
+  <script>
+    window.addEventListener("load", () => {
+
+      const grid = new Isotope("section", {
+
+        itemSelector: "article",
+        columnWidrh: "article",
+        tranaitionDuration: "0.5s"
+      });
+
+      const btns = document.querySelectorAll("main ul li");
+
+      for (let el of btns) {
+
+        el.addEventListener("click", e=> {
+          e.preventDefault();
+
+          const sort = e.currentTarget.querySelector("a").getAttribute("href");
+
+          grid.arrange({
+            filter : sort
+          });
+
+          for (let el of btns) {
+            el.classList.remove("on");
+          }
+
+          e.currentTarget.classList.add("on");
+        })
+      }
+    });
+  </script>
+</head>
+
+<body>
+  <header>
+    <h1>DECODE LAB</h1>
+    <ul>
+      <li>
+        <a href="#">
+          <i class="fa-brands fa-twitter"></i>
+          <span>Twittwe</span>
+        </a>
+      </li>
+
+      <li>
+        <a href="#">
+          <i class="fa-brands fa-facebook"></i>
+          <span>Facebook</span>
+        </a>
+      </li>
+
+      <li>
+        <a href="#">
+          <i class="fa-solid fa-envelope"></i>
+          <span>Email</span>
+        </a>
+      </li>
+    </ul>
+  </header>
+
+  <!--
+오른쪽 전체 영역 = 메인, 메인안에 이미지 묶어줄 영역 = 세션,
+세션안에 개별 영역 = 아티클, 아티클 내에 이미지와 텍스트 묶어줄 영역 = div,
+div 내에 img, h2, p
+-->
+
+  <main>
+    <ul>
+      <li class="on">
+        <a href="*">ALL</a>
+      </li>
+
+      <li>
+        <a href=".odd">ODD</a>
+      </li>
+
+      <li>
+        <a href=".even">EVEN</a>
+      </li>
+    </ul>
+
+    <section>
+      <article class="odd">
+        <div>
+          <img src="./img/p1.jpg" alt="img">
+          <h2>1. Lorem, ipsum dolor.</h2>
+          <p>
+            Lorem ipsum dolor sit amet consectetur, adipisicing elit.
+          </p>
+        </div>
+      </article>
+
+      <article class="even">
+        <div>
+          <img src="./img/p2.jpg" alt="img">
+          <h2>2. Lorem, ipsum dolor.</h2>
+          <p>
+            Lorem ipsum dolor sit amet consectetur adipisicing elit.
+          </p>
+        </div>
+      </article>
+
+      <article class="odd">
+        <div>
+          <img src="./img/p3.jpg" alt="img">
+          <h2>3. Lorem, ipsum dolor.</h2>
+          <p>
+            Lorem ipsum dolor sit amet consectetur, adipisicing elit.
+          </p>
+        </div>
+      </article>
+
+      <article class="even">
+        <div>
+          <img src="./img/p4.jpg" alt="img">
+          <h2>4. Lorem, ipsum dolor.</h2>
+          <p>
+            Lorem ipsum dolor sit amet consectetur adipisicing elit.
+          </p>
+        </div>
+      </article>
+
+      <article class="odd">
+        <div>
+          <img src="./img/p5.jpg" alt="img">
+          <h2>5. Lorem, ipsum dolor.</h2>
+          <p>
+            Lorem ipsum dolor sit amet consectetur, adipisicing elit.
+          </p>
+        </div>
+      </article>
+
+      <article class="even">
+        <div>
+          <img src="./img/p6.jpg" alt="img">
+          <h2>6. Lorem, ipsum dolor.</h2>
+          <p>
+            Lorem ipsum dolor sit amet consectetur adipisicing elit.
+          </p>
+        </div>
+      </article>
+
+      <article class="odd">
+        <div>
+          <img src="./img/p7.jpg" alt="img">
+          <h2>7. Lorem, ipsum dolor.</h2>
+          <p>
+            Lorem ipsum dolor sit amet consectetur, adipisicing elit.
+          </p>
+        </div>
+      </article>
+
+      <article class="even">
+        <div>
+          <img src="./img/p8.jpg" alt="img">
+          <h2>8. Lorem, ipsum dolor.</h2>
+          <p>
+            Lorem ipsum dolor sit amet consectetur adipisicing elit.
+          </p>
+        </div>
+      </article>
+
+      <article class="odd">
+        <div>
+          <img src="./img/p9.jpg" alt="img">
+          <h2>9. Lorem, ipsum dolor.</h2>
+          <p>
+            Lorem ipsum dolor sit amet consectetur, adipisicing elit.
+          </p>
+        </div>
+      </article>
+
+      <article class="even">
+        <div>
+          <img src="./img/p10.jpg" alt="img">
+          <h2>10. Lorem, ipsum dolor.</h2>
+          <p>
+            Lorem ipsum dolor sit amet consectetur adipisicing elit.
+          </p>
+        </div>
+      </article>
+
+      <article class="odd">
+        <div>
+          <img src="./img/p11.jpg" alt="img">
+          <h2>11. Lorem, ipsum dolor.</h2>
+          <p>
+            Lorem ipsum dolor sit amet consectetur, adipisicing elit.
+          </p>
+        </div>
+      </article>
+
+      <article class="even">
+        <div>
+          <img src="./img/p12.jpg" alt="img">
+          <h2>12. Lorem, ipsum dolor.</h2>
+          <p>
+            Lorem ipsum dolor sit amet consectetur adipisicing elit.
+          </p>
+        </div>
+      </article>
+
+      <article class="odd">
+        <div>
+          <img src="./img/p13.jpg" alt="img">
+          <h2>13. Lorem, ipsum dolor.</h2>
+          <p>
+            Lorem ipsum dolor sit amet consectetur, adipisicing elit.
+          </p>
+        </div>
+      </article>
+
+      <article class="even">
+        <div>
+          <img src="./img/p14.jpg" alt="img">
+          <h2>14. Lorem, ipsum dolor.</h2>
+          <p>
+            Lorem ipsum dolor sit amet consectetur adipisicing elit.
+          </p>
+        </div>
+      </article>
+
+      <article class="odd">
+        <div>
+          <img src="./img/p15.jpg" alt="img">
+          <h2>15. Lorem, ipsum dolor.</h2>
+          <p>
+            Lorem ipsum dolor sit amet consectetur, adipisicing elit.
+          </p>
+        </div>
+      </article>
+
+      <article class="even">
+        <div>
+          <img src="./img/p16.jpg" alt="img">
+          <h2>16. Lorem, ipsum dolor.</h2>
+          <p>
+            Lorem ipsum dolor sit amet consectetur adipisicing elit.
+          </p>
+        </div>
+      </article>
+
+      <article class="odd">
+        <div>
+          <img src="./img/p17.jpg" alt="img">
+          <h2>71. Lorem, ipsum dolor.</h2>
+          <p>
+            Lorem ipsum dolor sit amet consectetur, adipisicing elit.
+          </p>
+        </div>
+      </article>
+
+      <article class="even">
+        <div>
+          <img src="./img/p18.jpg" alt="img">
+          <h2>18. Lorem, ipsum dolor.</h2>
+          <p>
+            Lorem ipsum dolor sit amet consectetur adipisicing elit.
+          </p>
+        </div>
+      </article>
+
+      <article class="odd">
+        <div>
+          <img src="./img/p19.jpg" alt="img">
+          <h2>19. Lorem, ipsum dolor.</h2>
+          <p>
+            Lorem ipsum dolor sit amet consectetur, adipisicing elit.
+          </p>
+        </div>
+      </article>
+
+      <article class="even">
+        <div>
+          <img src="./img/p20.jpg" alt="img">
+          <h2>20. Lorem, ipsum dolor.</h2>
+          <p>
+            Lorem ipsum dolor sit amet consectetur adipisicing elit.
+          </p>
+        </div>
+      </article>
+    </section>
+  </main>
+
+</body>
+
+</html>

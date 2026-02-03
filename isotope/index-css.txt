@@ -1,0 +1,506 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+ <meta charset="UTF-8">
+ <meta name="viewport" content="width=device-width, initial-scale=1.0">
+ <title>핀터레스트 스타일 갤러리</title>
+ <style>
+  @charset "utf-8";
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+KR&family=Kalam&family=Nanum+Gothic+Coding&family=Noto+Sans+KR&family=Orbitron:wght@400;500&family=Permanent+Marker&display=swap');
+
+* {
+ margin: 0;
+ padding: 0;
+}
+
+ul,
+ol,
+li {
+ list-style: none;
+}
+
+a {
+ text-decoration: none;
+}
+
+body {
+ background: #efefef;
+}
+
+header {
+ width: 400px;
+ height: 100%;
+ background: linear-gradient(45deg, aqua, royalblue);
+ position: fixed;
+ top: 0px;
+ left: 0px;
+}
+
+header h1 {
+ font: bold 50px/1 'orbitron';
+ color: #fff;
+ letter-spacing: 1px;
+ position: absolute;
+ left: 50px;
+ top: 50%;
+ transform: translateY(-150%);
+}
+
+header h1::before {
+ /*ui/ux 설명글 추가*/
+ content: 'UI/UX DEVELOPMENT';
+ display: block;
+ font: 14px/1 'orbitron';
+ color: #fff;
+ letter-spacing: 2px;
+ position: absolute;
+ left: 0px;
+ top: 140px;
+ opacity: 0.8;
+}
+
+header h1::after {
+ /*흰색 가로 막대 추가*/
+ content: '';
+ display: block;
+ width: 150px;
+ height: 2px;
+ background: #fff;
+ margin-top: 20px;
+}
+
+header ul {
+ position: absolute;
+ left: 40px;
+ bottom: 100px;
+}
+
+header ul li {
+ float: left;
+ margin-right: 10px;
+}
+
+header ul li a {
+ font-size: 20px;
+ color: #fff;
+}
+
+main { /*분류기능 영역*/
+ margin-left: 400px;
+ box-sizing: border-box;
+ padding: 20px;
+}
+
+/*분류기능 추가 */
+main ul {
+ width: 100%;
+ margin-bottom: 10px;
+ margin-right: 20px;
+}
+
+main ul::after {
+ content: "";
+ display: block;
+ clear: both;
+}
+
+main ul li {
+ float: right;
+ margin-right: 20px;
+ width: 100px;
+ height: 26px;
+}
+
+main ul li a {
+ display: block;
+ width: 100%;
+ height: 100%;
+ font: bold 7px/26px 'orbitron';
+ color: #aaa;
+ letter-spacing: 1px;
+ text-align: center;
+ border-radius: 5px;
+ box-shadow: 0px 0px 3px rgba(0, 0, 0, 0.5);
+ background: #fff;
+}
+
+main ul li.on a {
+ background: linear-gradient(45deg, #67faf3, #58abf8);
+ box-shadow: 0px 5px 20px rgba(0, 255, 255, 0.527);
+ color: #fff;
+}
+
+main section {
+ width: 100%;
+}
+
+main section::after {
+ content: "";
+ display: block;
+ clear: both;
+}
+
+main section article {
+ width: 20%;
+ float: left;
+ box-sizing: border-box;
+ padding: 12px;
+}
+
+main section article div {
+ width: 100%;
+ height: 100%;
+ background: #fff;
+ border-radius: 4px;
+ box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.1);
+ box-sizing: border-box;
+ padding: 14px;
+}
+
+main section article div img {
+ width: 100%;
+}
+
+main section article div h2 {
+ margin-top: 15px;
+ font: bold 11px/1 'orbitron';
+ letter-spacing: 1px;
+ color: #444;
+ margin-bottom: 5px;
+}
+
+main section article div p {
+ font: 10px/1 'orbitron';
+ color: #777;
+ margin-bottom: 15px;
+}
+
+/* 미디워 쿼리 이용하여 반응형 지정
+ 
+브라우저 폭이 1600픽셀 미만일때 - 왼쪽헤더 영역 너비값축소, 오른쪽 영역 아티클 요소 가로 4개씩 배치 
+*/
+@media screen and (max-width:1599px) {
+ header {
+  width: 350px;
+ }
+
+ main {
+  margin-left: 350px;
+ }
+
+ main section article {
+  width: 25%;
+  /*가로 4개 배치를 위해 개당 영역25%*/
+ }
+}
+
+/* 1200px 미만일때 */
+@media screen and (max-width:1199px) {
+ header {
+  width: 100%;
+  height: 80px;
+  position: relative;
+ }
+
+ header h1 {
+  font: bold 24px/1 'orbitron';
+  transform: translateY(-50%);
+ }
+
+ header h1::before,
+ header h1::after {
+  display: none;
+ }
+
+ header ul {
+  left: 83%;
+  bottom: 25px;
+ }
+
+ header ul li {
+  margin-right: 20px;
+ }
+
+ header ul li a {
+  font-size: 20px;
+ }
+
+ header ul li a span {
+  display: none;
+ }
+
+ main {
+  width: 100%;
+  margin-left: 0px;
+ }
+
+ main section article {
+  width: 25%;
+ }
+}
+
+/* 브라우저 폭이 900px 미만일때 article 가로 3개로 배치 */
+@media screen and (max-width:899px) {
+ header ul {
+  left: 80%;
+ }
+
+ main section article {
+  width: 33.33%;
+ }
+}
+
+/* 브라우저 폭이 680px 미만일 때 article 너비50%,가로 2개로 배치 */
+@media screen and (max-width:679px) {
+ header ul {
+  left: 70%;
+ }
+
+ main section article {
+  width: 50%;
+ }
+}
+
+/* 브라우저 폭이 540px 미만일때 article 가로 1개 배치 */
+@media screen and (max-width:539px) {
+
+ header ul {
+  display: none;
+ }
+ main ul {
+  margin-right: 0px;
+  box-sizing: border-box;
+  padding: 0px 13px;
+ }
+
+ main ul li {
+  margin-right: 2%;
+  width: 32%;
+ }
+
+ main ul li:nth-of-type(1) {
+  margin-right: 0%;
+ }
+
+ main section article {
+  width: 100%;
+ }
+}
+ </style>
+ <link href="./favicon.ico" rel="icon">
+ <script src="https://kit.fontawesome.com/e0e670702c.js" crossorigin="anonymous"></script>
+ <script src="./isotope.pkgd.min.js"></script>
+ <script src="./script.js" rel="javascript"></script>
+</head>
+<!-- 아이소토프 플러그인 파일 연결-->
+<body>
+ <!-- 왼쪽 헤더 영역 -->
+ <header>
+  <h1>DECODE LAB</h1>
+  <ul>
+   <li>
+    <a href="#"><i class="fa-brands fa-twitter"></i>
+     <span>Twitter</span>
+    </a>
+   </li>
+
+   <li>
+    <a href="#"><i class="fa-brands fa-facebook"></i>
+     <span>Facebook</span>
+    </a>
+   </li>
+
+   <li>
+    <a href="#"><i class="fa-brands fa-facebook"></i>
+     <span>E-mail</span>
+    </a>
+   </li>
+  </ul>
+ </header>
+
+ <!--
+  오른쪽 전체영역= 메인
+  메인안에 이미지 묶어줄 = 세션
+  세션안에 개별 영역 = 아티클
+  아티클내에 이미지와 텍스트묶어줄 = div 
+  div 내에 img, 제목h2, 문단p
+ -->
+ <main>
+  <!-- 분류 기능 추가 -->
+<ul>
+ <li class="on"><a href="*">ALL</a></li>
+ <li><a href=".odd">ODD</a></li>
+ <li><a href=".even">EVEN</a></li>
+</ul>
+
+<section>
+ <article class="odd">
+  <div>
+   <img src="./img/p1.jpg" alt="">
+   <h2>1.Lorem, ipsum dolor.</h2>
+   <p>Lorem ipsum dolor sit amet consectetur.</p>
+  </div>
+ </article>
+
+ <article class="even">
+  <div>
+   <img src="./img/p2.jpg" alt="">
+   <h2>2.Lorem, ipsum dolor.</h2>
+   <p>Lorem ipsum dolor sit amet consectetur.</p>
+  </div>
+ </article>
+
+ <article class="odd">
+  <div>
+   <img src="./img/p3.jpg" alt="">
+   <h2>3.Lorem, ipsum dolor.</h2>
+   <p>Lorem ipsum dolor sit amet consectetur.</p>
+  </div>
+ </article>
+
+ <article class="even">
+  <div>
+   <img src="./img/p4.jpg" alt="">
+   <h2>4.Lorem, ipsum dolor.</h2>
+   <p>Lorem ipsum dolor sit amet consectetur.</p>
+  </div>
+ </article>
+
+ <article class="odd">
+  <div>
+   <img src="./img/p5.jpg" alt="">
+   <h2>5.Lorem, ipsum dolor.</h2>
+   <p>Lorem ipsum dolor sit amet consectetur.</p>
+  </div>
+ </article>
+
+ <article class="even">
+  <div>
+   <img src="./img/p6.jpg" alt="">
+   <h2>6.Lorem, ipsum dolor.</h2>
+   <p>Lorem ipsum dolor sit amet consectetur.</p>
+  </div>
+ </article>
+
+ <article class="odd">
+  <div>
+   <img src="./img/p7.jpg" alt="">
+   <h2>7.Lorem, ipsum dolor.</h2>
+   <p>Lorem ipsum dolor sit amet consectetur.</p>
+  </div>
+ </article>
+
+ <article class="even">
+  <div>
+   <img src="./img/p8.jpg" alt="">
+   <h2>8.Lorem, ipsum dolor.</h2>
+   <p>Lorem ipsum dolor sit amet consectetur.</p>
+  </div>
+ </article>
+
+ <article class="odd">
+  <div>
+   <img src="./img/p9.jpg" alt="">
+   <h2>9.Lorem, ipsum dolor.</h2>
+   <p>Lorem ipsum dolor sit amet consectetur.</p>
+  </div>
+ </article>
+
+ <article class="even">
+  <div>
+   <img src="./img/p10.jpg" alt="">
+   <h2>10.Lorem, ipsum dolor.</h2>
+   <p>Lorem ipsum dolor sit amet consectetur.</p>
+  </div>
+ </article>
+
+ <article class="odd">
+  <div>
+   <img src="./img/p11.jpg" alt="">
+   <h2>11.Lorem, ipsum dolor.</h2>
+   <p>Lorem ipsum dolor sit amet consectetur.</p>
+  </div>
+ </article>
+
+ <article class="even">
+  <div>
+   <img src="./img/p12.jpg" alt="">
+   <h2>12.Lorem, ipsum dolor.</h2>
+   <p>Lorem ipsum dolor sit amet consectetur.</p>
+  </div>
+ </article>
+
+ <article class="odd">
+  <div>
+   <img src="./img/p13.jpg" alt="">
+   <h2>13.Lorem, ipsum dolor.</h2>
+   <p>Lorem ipsum dolor sit amet consectetur.</p>
+  </div>
+ </article>
+
+ <article class="even">
+  <div>
+   <img src="./img/p14.jpg" alt="">
+   <h2>14.Lorem, ipsum dolor.</h2>
+   <p>Lorem ipsum dolor sit amet consectetur.</p>
+  </div>
+ </article>
+
+ <article class="odd">
+  <div>
+   <img src="./img/p15.jpg" alt="">
+   <h2>15.Lorem, ipsum dolor.</h2>
+   <p>Lorem ipsum dolor sit amet consectetur.</p>
+  </div>
+ </article>
+
+ <article class="even">
+  <div>
+   <img src="./img/p16.jpg" alt="">
+   <h2>16.Lorem, ipsum dolor.</h2>
+   <p>Lorem ipsum dolor sit amet consectetur.</p>
+  </div>
+ </article>
+
+ <article class="odd">
+  <div>
+   <img src="./img/p17.jpg" alt="">
+   <h2>17.Lorem, ipsum dolor.</h2>
+   <p>Lorem ipsum dolor sit amet consectetur.</p>
+  </div>
+ </article>
+
+ <article class="even">
+  <div>
+   <img src="./img/p18.jpg" alt="">
+   <h2>18.Lorem, ipsum dolor.</h2>
+   <p>Lorem ipsum dolor sit amet consectetur.</p>
+  </div>
+ </article>
+
+ <article class="odd">
+  <div>
+   <img src="./img/p19.jpg" alt="">
+   <h2>19.Lorem, ipsum dolor.</h2>
+   <p>Lorem ipsum dolor sit amet consectetur.</p>
+  </div>
+ </article>
+
+ <article class="even">
+  <div>
+   <img src="./img/p20.jpg" alt="">
+   <h2>20.Lorem, ipsum dolor.</h2>
+   <p>Lorem ipsum dolor sit amet consectetur.</p>
+  </div>
+ </article>
+</section> 
+<!-- 
+ section>article*20>div>imf[src="img/p$.jpc"]+h2>lorem3^p>lorem7 까지 적고 연결해서 탭 누르면 자동완성-->
+
+
+
+ </main>
+</body>
+
+</html>
