@@ -1,0 +1,575 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PROMPT PLATES | AI 맞춤형 밀키트 서비스</title>
+  <script src="./script.js"></script>
+  <script src="./ai-chat-git.js"></script>  
+  <style>
+    a {
+      text-decoration: none;
+      color: inherit;
+    }
+
+      /* 메뉴바 스타일 */
+    .main-nav {
+        position: fixed; top: 0; left: 0; width: 100%;
+        height: 70px; background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(10px); /* 유리창 효과 */
+        border-bottom: 1px solid #eee; z-index: 2000;
+    }
+    .nav-container {
+        max-width: 1200px; margin: 0 auto; height: 100%;
+        display: flex; align-items: center; justify-content: space-between; padding: 0 20px;
+    }
+    .logo { font-size: 22px; font-weight: 900; letter-spacing: -1px; }
+    .logo span { color: #007AFF; }
+
+    .nav-links { display: flex; list-style: none; gap: 30px; }
+    .nav-links a { 
+        text-decoration: none; color: #555; font-size: 15px; font-weight: 500;
+        transition: color 0.3s;
+    }
+    .nav-links a:hover { color: #007AFF; }
+    /* 사용자 상태 표시 (AI 느낌) */
+    .nav-auth { display: flex; align-items: center; gap: 20px; }
+    .user-status { font-size: 13px; color: #666; display: flex; align-items: center; gap: 5px; }
+    .user-status b { color: #333; }
+    .user-status::before {
+        content: ""; width: 8px; height: 8px; background: #4cd137; 
+        border-radius: 50%; display: inline-block;
+        animation: blink 1.5s infinite;
+    }
+     @keyframes blink {
+        0% { opacity: 1; } 50% { opacity: 0.3; } 100% { opacity: 1; }
+    }
+      .login-btn {
+        padding: 8px 18px; border-radius: 20px; border: 1px solid #007AFF;
+        background: transparent; color: #007AFF; font-weight: bold; cursor: pointer;
+    }
+    
+    #review {
+    padding: 100px 10%;
+    background-color: #fff;
+}
+
+.review-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 30px;
+}
+
+.review-card {
+    background: #fdfdfd;
+    border-radius: 15px;
+    overflow: hidden;
+    box-shadow: 0 10px 20px rgba(0,0,0,0.05);
+    transition: 0.3s;
+    border: 1px solid #f0f0f0;
+}
+
+.review-card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 15px 30px rgba(0,0,0,0.1);
+}
+
+.review-img {
+    height: 200px;
+    overflow: hidden;
+}
+
+.review-img img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: 0.5s;
+}
+
+.review-card:hover .review-img img {
+    transform: scale(1.1);
+}
+
+.review-body {
+    padding: 20px;
+}
+
+.stars {
+    color: #ffb800;
+    margin-bottom: 10px;
+    font-size: 0.9rem;
+}
+
+.review-text {
+    font-size: 1rem;
+    color: #444;
+    line-height: 1.5;
+    height: 75px; /* 높이 고정으로 카드 정렬 유지 */
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+}
+
+.reviewer {
+    margin-top: 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-top: 1px solid #eee;
+    padding-top: 15px;
+}
+
+.reviewer .name {
+    font-weight: bold;
+    color: #333;
+}
+
+.reviewer .tag {
+    font-size: 0.8rem;
+    color: #ff6b6b;
+    background: #fff0f0;
+    padding: 4px 10px;
+    border-radius: 20px;
+}
+
+    /* 2. 챗봇 버튼 (런처) */
+        .chat-launcher {
+            position: fixed; bottom: 30px; right: 30px;
+            width: 60px; height: 60px;
+            background-color: #007AFF; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            color: white; font-size: 30px; cursor: pointer;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            border: none; z-index: 1000;
+        }
+
+        /* 3. 채팅창 본체 */
+        .chat-window {
+            position: fixed; bottom: 100px; right: 30px;
+            width: 350px; height: 500px;
+            background: white; border-radius: 20px;
+            display: flex; flex-direction: column;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            overflow: hidden; z-index: 1000;
+            display: none; /* 처음에는 숨겨둠 */
+        }
+
+        /* 4. 헤더 부분 */
+        .chat-header {
+            background-color: #007AFF; color: white;
+            padding: 20px; text-align: center; font-weight: bold;
+        }
+
+        /* 5. 메시지 리스트 공간 */
+        .chat-messages {
+            flex: 1; padding: 20px; overflow-y: auto;
+            display: flex; flex-direction: column; gap: 15px;
+            background-color: #ffffff;
+        }
+          /* 말풍선 공통 스타일 */
+        .bubble { padding: 10px 15px; border-radius: 18px; max-width: 75%; font-size: 14px; line-height: 1.4; }
+        
+        /* AI 메시지 (왼쪽) */
+        .ai-bubble { align-self: flex-start; background-color: #f1f1f1; color: #333; }
+        
+        /* 사용자 메시지 (오른쪽) */
+        .user-bubble { align-self: flex-end; background-color: #007AFF; color: white; }
+
+        /* 6. 하단 입력창 */
+        .chat-input-area {
+            padding: 15px; border-top: 1px solid #eee;
+            display: flex; gap: 10px;
+        }
+
+        .chat-input-area input {
+            flex: 1; border: 1px solid #ddd; padding: 10px;
+            border-radius: 25px; outline: none;
+        }
+
+        .chat-input-area button {
+            background-color: #007AFF; color: white; border: none;
+            padding: 0 15px; border-radius: 20px; cursor: pointer;
+        }
+        
+        /*푸터영역*/
+.main-footer {
+    background-color: #2c3e50;
+    color: #ecf0f1;
+    padding: 60px 10% 20px;
+    font-size: 0.9rem;
+}
+
+.footer-container {
+    display: grid;
+    grid-template-columns: 1.5fr 1fr 1.5fr;
+    gap: 50px;
+    margin-bottom: 40px;
+}
+
+.footer-brand .logo {
+    font-size: 1.5rem;
+    font-weight: bold;
+    margin-bottom: 15px;
+}
+
+.footer-brand .logo span {
+    color: #ff6b6b;
+}
+
+.brand-slogan {
+    color: #bdc3c7;
+    margin-bottom: 20px;
+}
+
+.social-links a {
+    color: #ecf0f1;
+    text-decoration: none;
+    margin-right: 15px;
+    font-size: 0.8rem;
+    border: 1px solid #555;
+    padding: 5px 10px;
+    border-radius: 5px;
+    transition: 0.3s;
+}
+
+.social-links a:hover {
+    background: #ff6b6b;
+    border-color: #ff6b6b;
+}
+
+.footer-links h4, .footer-contact h4 {
+    color: #fff;
+    margin-bottom: 20px;
+    font-size: 1.1rem;
+}
+
+.footer-links ul {
+    list-style: none;
+    padding: 0;
+}
+
+.footer-links ul li {
+    margin-bottom: 10px;
+}
+
+.footer-links ul li a {
+    color: #bdc3c7;
+    text-decoration: none;
+    transition: 0.2s;
+}
+
+.footer-links ul li a:hover {
+    color: #ff6b6b;
+}
+
+.footer-contact p {
+    margin-bottom: 10px;
+    color: #bdc3c7;
+}
+
+/* 하단 바 */
+.footer-bottom {
+    border-top: 1px solid #3e4f5f;
+    padding-top: 20px;
+    margin-top: 40px;
+}
+
+.bottom-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    color: #7f8c8d;
+    font-size: 0.8rem;
+}
+
+.legal-links a {
+    color: #7f8c8d;
+    text-decoration: none;
+    margin-left: 20px;
+}
+
+.legal-links b {
+    color: #bdc3c7;
+}
+
+/* --- 고객후기 페이지(sub04) 반응형 코드 --- */
+
+/* 1. 태블릿 및 일반 모바일 (1024px 이하) */
+@media screen and (max-width: 1024px) {
+    .content-section { padding: 60px 5%; }
+    .review-grid { grid-template-columns: repeat(2, 1fr); gap: 20px; }
+}
+
+/* 2. 모바일 (768px 이하) */
+@media screen and (max-width: 768px) {
+    /* 상단 내비게이션 정리 */
+    .nav-links, .nav-auth { display: none; }
+    .nav-container { justify-content: center; }
+
+    /* 헤더 타이틀 크기 조정 */
+    .section-title { font-size: 26px; padding-top: 100px; text-align: center; }
+
+    /* 후기 그리드: 1열로 변경 (카드 가독성 확보) */
+    .review-grid {
+        grid-template-columns: 1fr;
+        gap: 20px;
+    }
+
+    .review-card { padding: 25px; }
+
+    /* 푸터 레이아웃 세로 정렬 */
+    .footer-container {
+        flex-direction: column;
+        gap: 40px;
+        text-align: center;
+    }
+    .social-links { justify-content: center; }
+}
+
+/* 3. 소형 모바일 (480px 이하) */
+@media screen and (max-width: 480px) {
+    /* 후기 텍스트 및 별점 크기 최적화 */
+    .review-text { font-size: 14px; line-height: 1.6; }
+    .review-user { font-size: 13px; }
+    .stars { font-size: 16px; margin-bottom: 10px; }
+
+    /* 하단 법적 고지 및 버튼 정렬 */
+    .bottom-content {
+        flex-direction: column;
+        gap: 15px;
+        text-align: center;
+    }
+
+    /* 챗봇 창 모바일 사이즈 대응 */
+    .chat-window {
+        width: calc(100% - 40px);
+        right: 20px;
+        bottom: 90px;
+    }
+}
+
+</style>
+
+</head>
+<body>
+    
+    <!--메뉴바 -->
+    <nav class="main-nav">
+    <div class="nav-container">
+        <div class="logo"><a href="./plates-index.html">PROMPT <span>PLATES</span></a></div>
+        <ul class="nav-links">
+            <li><a href="./sub01-git.html">밀키트</a></li>
+            <li><a href="./sub02-git.html">AI 추천식단</a></li>
+            <li><a href="./sub03-git.html">영양 분석</a></li>
+            <li><a href="./sub04-git.html">고객후기</a></li>
+            <li><a href="./sub05-git.html">브랜드 스토리</a></li>
+        </ul>
+        <div class="nav-auth">
+            <span class="user-status">● <b>잘한다</b>님 분석중</span>
+            <button class="login-btn">마이페이지</button>
+        </div>
+    </div>
+</nav>
+
+<section id="review" class="section-container">
+    <div class="section-header">
+        <h2>사용자들의 리얼 보이스</h2>
+        <p>PROMPT PLATES와 함께 건강한 변화를 경험한 고객님들의 후기입니다.</p>
+    </div>
+
+    <div class="review-grid">
+        <div class="review-card">
+            <div class="review-img">
+                <img src="https://images.unsplash.com/photo-1512621776951-a57141f2eefd?q=80&w=400" alt="후기이미지1">
+            </div>
+            <div class="review-body">
+                <div class="stars">★★★★★</div>
+                <p class="review-text">"매번 뭐 먹을지 고민하는 게 일이었는데, AI가 제 건강상태 맞춰서 골라주니 너무 편해요. 맛도 기대 이상!"</p>
+                <div class="reviewer">
+                    <span class="name">김건강님</span>
+                    <span class="tag">#다이어트성공</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="review-card">
+            <div class="review-img">
+                <img src="https://images.unsplash.com/photo-1504674900247-0877df9cc836?q=80&w=400" alt="후기이미지2">
+            </div>
+            <div class="review-body">
+                <div class="stars">★★★★★</div>
+                <p class="review-text">"직장인이라 영양 챙기기 힘들었는데 분석 리포트 보면서 부족한 영양소를 채울 수 있어서 좋아요."</p>
+                <div class="reviewer">
+                    <span class="name">이직딩님</span>
+                    <span class="tag">#벌크업중</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="review-card">
+            <div class="review-img">
+                <img src="https://images.unsplash.com/photo-1490645935967-10de6ba17061?q=80&w=400" alt="후기이미지3">
+            </div>
+            <div class="review-body">
+                <div class="stars">★★★★☆</div>
+                <p class="review-text">"재료가 정말 신선해요. 소스 양 조절도 가능해서 저염식 하시는 분들께 강추합니다!"</p>
+                <div class="reviewer">
+                    <span class="name">박클린님</span>
+                    <span class="tag">#유지어터</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+     <div class="review-grid">
+        <div class="review-card">
+            <div class="review-img">
+                <img src="https://images.unsplash.com/photo-1512621776951-a57141f2eefd?q=80&w=400" alt="후기이미지1">
+            </div>
+            <div class="review-body">
+                <div class="stars">★★★★★</div>
+                <p class="review-text">"매번 뭐 먹을지 고민하는 게 일이었는데, AI가 제 건강상태 맞춰서 골라주니 너무 편해요. 맛도 기대 이상!"</p>
+                <div class="reviewer">
+                    <span class="name">김건강님</span>
+                    <span class="tag">#다이어트성공</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="review-card">
+            <div class="review-img">
+                <img src="https://images.unsplash.com/photo-1504674900247-0877df9cc836?q=80&w=400" alt="후기이미지2">
+            </div>
+            <div class="review-body">
+                <div class="stars">★★★★★</div>
+                <p class="review-text">"직장인이라 영양 챙기기 힘들었는데 분석 리포트 보면서 부족한 영양소를 채울 수 있어서 좋아요."</p>
+                <div class="reviewer">
+                    <span class="name">이직딩님</span>
+                    <span class="tag">#벌크업중</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="review-card">
+            <div class="review-img">
+                <img src="https://images.unsplash.com/photo-1490645935967-10de6ba17061?q=80&w=400" alt="후기이미지3">
+            </div>
+            <div class="review-body">
+                <div class="stars">★★★★☆</div>
+                <p class="review-text">"재료가 정말 신선해요. 소스 양 조절도 가능해서 저염식 하시는 분들께 강추합니다!"</p>
+                <div class="reviewer">
+                    <span class="name">박클린님</span>
+                    <span class="tag">#유지어터</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+     <div class="review-grid">
+        <div class="review-card">
+            <div class="review-img">
+                <img src="https://images.unsplash.com/photo-1512621776951-a57141f2eefd?q=80&w=400" alt="후기이미지1">
+            </div>
+            <div class="review-body">
+                <div class="stars">★★★★★</div>
+                <p class="review-text">"매번 뭐 먹을지 고민하는 게 일이었는데, AI가 제 건강상태 맞춰서 골라주니 너무 편해요. 맛도 기대 이상!"</p>
+                <div class="reviewer">
+                    <span class="name">김건강님</span>
+                    <span class="tag">#다이어트성공</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="review-card">
+            <div class="review-img">
+                <img src="https://images.unsplash.com/photo-1504674900247-0877df9cc836?q=80&w=400" alt="후기이미지2">
+            </div>
+            <div class="review-body">
+                <div class="stars">★★★★★</div>
+                <p class="review-text">"직장인이라 영양 챙기기 힘들었는데 분석 리포트 보면서 부족한 영양소를 채울 수 있어서 좋아요."</p>
+                <div class="reviewer">
+                    <span class="name">이직딩님</span>
+                    <span class="tag">#벌크업중</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="review-card">
+            <div class="review-img">
+                <img src="https://images.unsplash.com/photo-1490645935967-10de6ba17061?q=80&w=400" alt="후기이미지3">
+            </div>
+            <div class="review-body">
+                <div class="stars">★★★★☆</div>
+                <p class="review-text">"재료가 정말 신선해요. 소스 양 조절도 가능해서 저염식 하시는 분들께 강추합니다!"</p>
+                <div class="reviewer">
+                    <span class="name">박클린님</span>
+                    <span class="tag">#유지어터</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+  <!--푸터-->
+   <footer class="main-footer">
+    <div class="footer-container">
+        <div class="footer-brand">
+            <div class="logo">PROMPT <span>PLATES</span></div>
+            <p class="brand-slogan">AI가 설계하고 자연이 채운 맞춤형 식단</p>
+            <div class="social-links">
+                <a href="#">Instagram</a>
+                <a href="#">YouTube</a>
+                <a href="#">Blog</a>
+            </div>
+        </div>
+
+        <div class="footer-links">
+            <h4>Service</h4>
+            <ul>
+                <li><a href="#recommend">AI 추천식단</a></li>
+                <li><a href="#dashboard">영양 분석 리포트</a></li>
+                <li><a href="#review">고객 후기</a></li>
+                <li><a href="#brand">브랜드 스토리</a></li>
+            </ul>
+        </div>
+
+        <div class="footer-contact">
+            <h4>Contact</h4>
+            <p>고객센터: 1588-0000 (평일 09:00~18:00)</p>
+            <p>이메일: prompt@prompt.com</p>
+            <p>주소: 대구 광역시 달서구 달서동 123 </p>
+        </div>
+    </div>
+
+    <div class="footer-bottom">
+        <div class="bottom-content">
+            <p>&copy; 2026 PROMPT PLATES. All rights reserved.</p>
+            <div class="legal-links">
+                <a href="#">이용약관</a>
+                <a href="#"><b>개인정보처리방침</b></a>
+            </div>
+        </div>
+    </div>
+</footer>
+
+ <!--챗봇-->
+    
+    <button class="chat-launcher" onclick="toggleChat()">💬</button>
+
+    <div class="chat-window" id="chatWindow">
+        <div class="chat-header">밀키트 AI 상담사</div>
+        
+        <div class="chat-messages" id="chatMessages">
+            <div class="bubble ai-bubble">안녕하세요! 당신의 건강 데이터를 기반으로 딱 맞는 밀키트를 추천해 드릴게요. 궁금한 게 있으신가요?</div>
+        </div>
+
+        <div class="chat-input-area">
+            <input type="text" id="userInput" placeholder="메시지를 입력하세요...">
+            <button onclick="sendMessage()">전송</button>
+        </div>
+    </div>
+
+</body>
+</html>
